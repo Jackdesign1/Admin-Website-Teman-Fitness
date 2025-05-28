@@ -9,26 +9,23 @@ use App\Http\Controllers\KelasController;
 use App\Http\Controllers\CompanyProfileController;
 use App\Http\Controllers\BannerController;
 
-// Halaman utama langsung menampilkan Company Profile
+// Halaman utama (public)
 Route::get('/', [CompanyProfileController::class, 'public'])->name('company.public');
 
-// Rute Autentikasi (login, register, dll.)
+// Route auth Laravel standar (login, register via web)
 Auth::routes();
 
-// Halaman admin setelah login
+// Group route untuk user yang sudah login (session auth)
 Route::middleware(['auth'])->group(function () {
     Route::get('/home', [HomeController::class, 'index'])->name('home');
 
-    // Rute CRUD hanya bisa diakses setelah login
     Route::resource('members', MemberController::class);
     Route::resource('workouts', WorkoutController::class);
     Route::resource('mentors', MentorController::class);
     Route::resource('kelas', KelasController::class);
-    Route::resource('teman', TemanController::class);
     Route::resource('banner', BannerController::class);
 
-
-  Route::get('/company-profile', [CompanyProfileController::class, 'index'])->name('company.index');
+    Route::get('/company-profile', [CompanyProfileController::class, 'index'])->name('company.index');
     Route::get('/company-profile/edit', [CompanyProfileController::class, 'edit'])->name('company.edit');
     Route::post('/company-profile/update', [CompanyProfileController::class, 'update'])->name('company.update');
 });
